@@ -59,6 +59,8 @@ window.countNRooksSolutions = function(n) {
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
   var solution = undefined; //fixme
+  // mirror for even n and only check half board
+  // place element and then only place next where no conflict
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
