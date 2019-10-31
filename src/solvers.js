@@ -68,7 +68,37 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  let solutionCount = 0;
+  let possibleRowCols = _.range(0, n);
+  let board = new Board({'n': n});
+
+  const search = function(pRCs, row, size) {
+    if (row >= size) {
+      solutionCount += 1;
+      return;
+    }
+
+    pRCs.forEach((col, idx, arr) => {
+      board.togglePiece(row, col);
+
+      let majorDiagIdx = board._getFirstRowColumnIndexForMajorDiagonalOn(row, col);
+      let minorDiagIdx = board._getFirstRowColumnIndexForMinorDiagonalOn(row, col);
+
+      if (row === 0 || (!board.hasMajorDiagonalConflictAt(majorDiagIdx) && !board.hasMinorDiagonalConflictAt(minorDiagIdx))) {
+        let rPRCs = pRCs.slice(0, idx).concat(arr.slice(idx + 1));
+
+        search(rPRCs, row + 1, size);
+      }
+
+      board.togglePiece(row, col);
+    });
+  };
+
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+
+  search(possibleRowCols, 0, n);
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
