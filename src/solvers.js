@@ -58,9 +58,55 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
-  // mirror for even n and only check half board
-  // place element and then only place next where no conflict
+  let solution = (new Board({'n': n})).rows();
+  let foundSolution = false;
+  let possibleRowCols = _.range(0, n);
+  let board = new Board({'n': n});
+
+  const search = function(pRCs, row, size) {
+    if (foundSolution) {
+      return;
+    }
+
+    if (row >= size) {
+      foundSolution = true;
+      solution = board.rows();
+      return;
+    }
+
+    pRCs.forEach((col, idx, arr) => {
+      if (foundSolution) {
+        return;
+      }
+
+      board.togglePiece(row, col);
+
+      let majorDiagIdx = board._getFirstRowColumnIndexForMajorDiagonalOn(row, col);
+      let minorDiagIdx = board._getFirstRowColumnIndexForMinorDiagonalOn(row, col);
+
+      if (row === 0 || (!board.hasMajorDiagonalConflictAt(majorDiagIdx) && !board.hasMinorDiagonalConflictAt(minorDiagIdx))) {
+        let rPRCs = pRCs.slice(0, idx).concat(arr.slice(idx + 1));
+
+        search(rPRCs, row + 1, size);
+      }
+      if (!foundSolution) {
+        board.togglePiece(row, col);
+      }
+    });
+  };
+
+  if (n === 0) {
+    foundSolution = true;
+    solution = [];
+  }
+  if (n === 1) {
+    foundSolution = true;
+    solution = [[1]];
+  }
+
+  if (!foundSolution) {
+    search(possibleRowCols, 0, n);
+  }
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
@@ -73,6 +119,7 @@ window.countNQueensSolutions = function(n) {
   let board = new Board({'n': n});
 
   const search = function(pRCs, row, size) {
+    // mirror for even n and only check half board
     if (row >= size) {
       solutionCount += 1;
       return;
