@@ -17,7 +17,6 @@
 
 window.findNRooksSolution = function(n) {
   let solution = [];
-  // const boardInput = [];
 
   for (let i = 0; i < n; i += 1) {
     solution[i] = [];
@@ -27,8 +26,6 @@ window.findNRooksSolution = function(n) {
     }
   }
 
-  // solution = new Board(boardInput);
-
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
@@ -37,7 +34,7 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   let solutionCount = 0;
   let possibleRowCols = _.range(0, n);
-  let depth = n - 1; // TODO: check math
+  let depth = n - 1;
 
   const searchArrangements = function(pRCs, currentDepth) {
     if (currentDepth === 0) {
@@ -52,14 +49,6 @@ window.countNRooksSolutions = function(n) {
       searchArrangements(remainingPossibleRowCols, nextDepth);
     });
   };
-
-  if (n === 0) {
-    return 0;
-  } else if (n === 1) {
-    return 1;
-  } else if (n === 2) {
-    return 2;
-  }
 
   searchArrangements(possibleRowCols, depth);
 
