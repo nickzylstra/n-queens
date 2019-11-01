@@ -58,10 +58,11 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  let solution = (new Board({'n': n})).rows();
+  // let solution = (new Board({'n': n})).rows();
   let foundSolution = false;
   let possibleRowCols = _.range(0, n);
   let board = new Board({'n': n});
+  let solution = board.rows();
 
   const search = function(pRCs, row, size) {
     if (foundSolution) {

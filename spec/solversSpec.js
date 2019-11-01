@@ -79,4 +79,18 @@ describe('solvers', function() {
 
   });
 
+  describe('timesNQueens', function() {
+    it('finds the times for various n values, see console', function() {
+      _.range(0, 14).map(function(n) {
+        let startTime = Math.floor(Date.now());
+        var solutionCount = countNQueensSolutions(n);
+        let endTime = Math.floor(Date.now());
+        let totalTime = endTime - startTime;
+
+        console.log(`${totalTime} milliseconds for counting ${n} queens total solutions`);
+        expect(true).to.be.true;
+      });
+    });
+  });
+
 });
