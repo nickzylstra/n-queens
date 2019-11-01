@@ -81,7 +81,7 @@ describe('solvers', function() {
 
   describe('timesNQueens', function() {
     it('finds the times for various n values, see console', function() {
-      _.range(0, 14).map(function(n) {
+      _.range(0, 15).map(function(n) {
         let startTime = Math.floor(Date.now());
         var solutionCount = countNQueensSolutions(n);
         let endTime = Math.floor(Date.now());

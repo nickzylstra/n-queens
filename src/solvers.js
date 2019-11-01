@@ -115,27 +115,39 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
+  // mirror for even n and only check half board
   let solutionCount = 0;
   let possibleRowCols = _.range(0, n);
+  const lastCol = n % 2 === 0 ? Math.floor(n / 2) - 1 : Math.floor(n / 2);
+  let possibleFirstRowCols = _.range(0, lastCol + 1);
   let board = new Board({'n': n});
 
-  const search = function(pRCs, row, size) {
-    // mirror for even n and only check half board
+  const search = function(pRCs, row, size, isLastFirstRowCol, pFRCs) {
     if (row >= size) {
-      solutionCount += 1;
+      if (size % 2 === 0) {
+        solutionCount += 2;
+      } else {
+        solutionCount += isLastFirstRowCol ? 1 : 2;
+      }
       return;
     }
 
-    pRCs.forEach((col, idx, arr) => {
+    let rCs = row === 0 ? pFRCs : pRCs;
+
+    rCs.forEach((col, idx, arr) => {
       board.togglePiece(row, col);
 
       let majorDiagIdx = board._getFirstRowColumnIndexForMajorDiagonalOn(row, col);
       let minorDiagIdx = board._getFirstRowColumnIndexForMinorDiagonalOn(row, col);
 
       if (row === 0 || (!board.hasMajorDiagonalConflictAt(majorDiagIdx) && !board.hasMinorDiagonalConflictAt(minorDiagIdx))) {
-        let rPRCs = pRCs.slice(0, idx).concat(arr.slice(idx + 1));
+        let rPRCs = pRCs.slice(0, idx).concat(pRCs.slice(idx + 1));
 
-        search(rPRCs, row + 1, size);
+        if ( row === 0 && col === lastCol) {
+          isLastFirstRowCol = true;
+        }
+
+        search(rPRCs, row + 1, size, isLastFirstRowCol);
       }
 
       board.togglePiece(row, col);
@@ -146,7 +158,7 @@ window.countNQueensSolutions = function(n) {
     return 1;
   }
 
-  search(possibleRowCols, 0, n);
+  search(possibleRowCols, 0, n, false, possibleFirstRowCols);
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
